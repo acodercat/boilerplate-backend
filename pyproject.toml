@@ -1,0 +1,62 @@
+[project]
+name = "boilerplate-backend"
+version = "0.1.0"
+description = "FastAPI backend boilerplate — async SQLAlchemy, typed errors, JWT auth"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "alembic>=1.20.1",
+    "bcrypt>=5.0.0",
+    "fastapi>=0.162.5",
+    "loguru>=0.8.0",
+    "psycopg[binary]>=3.3.8",
+    "pydantic>=2.14.3",
+    "pydantic-settings>=2.16.2",
+    "pyjwt>=2.15.1",
+    "sqlalchemy[asyncio]>=2.1.8",
+    "uvicorn[standard]>=0.54.0",
+]
+
+[dependency-groups]
+dev = [
+    "httpx2>=2.16.0",
+    "mypy>=2.4.1",
+    "pytest>=9.2.0",
+    "pytest-asyncio>=1.4.1.post1",
+    "python-dotenv>=1.2.4",
+    "ruff>=0.17.4",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+# ``F`` / ``E9`` / ``E7`` are bugs rather than opinions; ``I`` / ``UP`` keep
+# imports and syntax consistent; ``B`` catches the likely-mistake patterns
+# (mutable defaults, ``raise`` without ``from`` inside ``except``). FastAPI
+# parameters use ``Annotated[..., Query()]``, so B008 needs no exemption.
+# The rest enforce docs/code-quality.md mechanically: ``N`` naming, ``BLE``
+# no blind ``except``, ``T20`` no ``print``, ``ERA`` no commented-out code,
+# ``SIM`` / ``C4`` simpler equivalents.
+select = ["F", "E7", "E9", "I", "UP", "B", "N", "BLE", "T20", "ERA", "SIM", "C4"]
+
+[tool.ruff.lint.per-file-ignores]
+# Applied migrations are frozen history generated from ``script.py.mako``.
+"alembic/versions/*" = ["I", "UP", "F401"]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+
+[tool.ruff.format]
+exclude = ["alembic/versions/*"]
+
+[tool.mypy]
+files = ["app"]
+strict = true
+ignore_missing_imports = true
+plugins = ["pydantic.mypy"]
